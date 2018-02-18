@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nobilix/vue-authenticate-service.git"
+    "url": "git+https://github.com/devstark-com/vue-auth-service.git"
   },
   "bugs": {
-    "url": "https://github.com/nobilix/vue-authenticate-service/issues"
+    "url": "https://github.com/devstark-com/vue-auth-service/issues"
   },
-  "homepage": "https://github.com/nobilix/vue-authenticate-service#readme",
+  "homepage": "https://github.com/devstark-com/vue-auth-service#readme",
   "devDependencies": {
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.1.1",

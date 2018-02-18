@@ -1,5 +1,5 @@
 /**
- * This implentation relies on interceptors realisation of Axios lib
+ * This implementation relies on interceptors realisation of Axios lib
  */
 export default (axiosInstance) => {
   return {
