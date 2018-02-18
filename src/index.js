@@ -1,15 +1,11 @@
 import service from './service'
-
-// // Install plugin
-// export function install (Vue, options) {
-//   service
-// }
+import axiosClientDriver from './drivers/axiosClientDriver'
 
 // Expose
 export {
-  service
+  service,
+  axiosClientDriver
 }
-/* -- Plugin definition & Auto-install -- */
 
 // Plugin
 const plugin = {
@@ -18,7 +14,7 @@ const plugin = {
   install (Vue, options) {
     const serviceInstance = service(Vue, options)
     Vue.$auth = Vue.prototype.$auth = serviceInstance
-    if (options.autoBoot) serviceInstance.boot()
+    if (serviceInstance.options.autoBoot) serviceInstance.boot()
     return serviceInstance
   }
 }
