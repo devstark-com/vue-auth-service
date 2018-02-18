@@ -51,6 +51,8 @@ const AuthService = (Vue, {
       autoFetch: true,
       accessTokenKey: 'accessToken',
       refreshTokenKey: 'refreshToken',
+      // before loaded middlware: (service, next) => { next() }
+      beforeLoaded: null,
       // override the defaults with given options
       ...options
     },
@@ -145,7 +147,11 @@ const AuthService = (Vue, {
     },
 
     setLoaded () {
-      if (this.state.loaded) return
+      // if beforeLoaded middlware is provided - wait for next() callback
+      if (this.options.beforeLoaded) {
+        const next = () => { this.state.loaded = true }
+        return this.options.beforeLoaded(this, next)
+      }
       this.state.loaded = true
     },
 
@@ -156,7 +162,7 @@ const AuthService = (Vue, {
     /**
      * @return {Promise}
      */
-    login (creds, loginOptinos = { fetchUser: true, remember: true }) {
+    login (creds, loginOptinos = { fetchUser: this.options.autoFetch, remember: true }) {
       return api.login(creds)
         .then(tokens => this.loginSuccess(tokens, loginOptinos))
         .catch(this.loginError.bind(this))
@@ -165,7 +171,7 @@ const AuthService = (Vue, {
     /**
      * @return {Promise}
      */
-    facebookLogin (creds, loginOptinos = { fetchUser: true }) {
+    facebookLogin (creds, loginOptinos = { fetchUser: this.options.autoFetch }) {
       return api.facebookLogin(creds)
         .then(tokens => this.loginSuccess(tokens, loginOptinos))
         .catch(() => {
@@ -176,7 +182,7 @@ const AuthService = (Vue, {
     /**
      * @return {Promise}
      */
-    googleLogin (creds, loginOptinos = { fetchUser: true }) {
+    googleLogin (creds, loginOptinos = { fetchUser: this.options.autoFetch }) {
       return api.googleLogin(creds)
         .then(tokens => this.loginSuccess(tokens, loginOptinos))
         .catch(() => {
@@ -187,7 +193,7 @@ const AuthService = (Vue, {
     /**
      * @return {Object.<string>}
      */
-    loginSuccess (tokens, loginOptinos = { fetchUser: true }) {
+    loginSuccess (tokens, loginOptinos = { fetchUser: this.options.autoFetch }) {
       this.setAuthenticated(true)
       this.updateLocalTokens(tokens)
       if (loginOptinos.fetchUser) {
