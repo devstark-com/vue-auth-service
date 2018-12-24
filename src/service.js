@@ -51,7 +51,7 @@ const AuthService = (Vue, {
       autoFetch: true,
       accessTokenKey: 'accessToken',
       refreshTokenKey: 'refreshToken',
-      // before loaded middlware: (service, next) => { next() }
+      // before loaded middleware: (service, next) => { next() }
       beforeLoaded: null,
       // override the defaults with given options
       ...options
@@ -147,7 +147,7 @@ const AuthService = (Vue, {
     },
 
     setLoaded () {
-      // if beforeLoaded middlware is provided - wait for next() callback
+      // if beforeLoaded middleware is provided - wait for next() callback
       if (this.options.beforeLoaded) {
         const next = () => { this.state.loaded = true }
         return this.options.beforeLoaded(this, next)
@@ -162,41 +162,37 @@ const AuthService = (Vue, {
     /**
      * @return {Promise}
      */
-    login (creds, loginOptinos = { fetchUser: this.options.autoFetch, remember: true }) {
+    login (creds, loginOptions = { fetchUser: this.options.autoFetch, remember: true }) {
       return api.login(creds)
-        .then(tokens => this.loginSuccess(tokens, loginOptinos))
+        .then(tokens => this.loginSuccess(tokens, loginOptions))
         .catch(this.loginError.bind(this))
     },
 
     /**
      * @return {Promise}
      */
-    facebookLogin (creds, loginOptinos = { fetchUser: this.options.autoFetch }) {
+    facebookLogin (creds, loginOptions = { fetchUser: this.options.autoFetch }) {
       return api.facebookLogin(creds)
-        .then(tokens => this.loginSuccess(tokens, loginOptinos))
-        .catch(() => {
-          this.loginError.bind(this)
-        })
+        .then(tokens => this.loginSuccess(tokens, loginOptions))
+        .catch(this.loginError.bind(this))
     },
 
     /**
      * @return {Promise}
      */
-    googleLogin (creds, loginOptinos = { fetchUser: this.options.autoFetch }) {
+    googleLogin (creds, loginOptions = { fetchUser: this.options.autoFetch }) {
       return api.googleLogin(creds)
-        .then(tokens => this.loginSuccess(tokens, loginOptinos))
-        .catch(() => {
-          this.loginError.bind(this)
-        })
+        .then(tokens => this.loginSuccess(tokens, loginOptions))
+        .catch(this.loginError.bind(this))
     },
 
     /**
      * @return {Object.<string>}
      */
-    loginSuccess (tokens, loginOptinos = { fetchUser: this.options.autoFetch }) {
+    loginSuccess (tokens, loginOptions = { fetchUser: this.options.autoFetch }) {
       this.setAuthenticated(true)
       this.updateLocalTokens(tokens)
-      if (loginOptinos.fetchUser) {
+      if (loginOptions.fetchUser) {
         return this.fetchUser()
       }
       return Promise.resolve(null)
@@ -238,7 +234,7 @@ const AuthService = (Vue, {
     isTokenValid: isTokenValid,
 
     /**
-     * Retrives accessToken through the process
+     * Retrieves accessToken through the process
      * @return {Promise}
      */
     accessToken () {
@@ -329,7 +325,7 @@ const AuthService = (Vue, {
     },
 
     /**
-     * Retrives a new accessToken through refresh process
+     * Retrieves a new accessToken through refresh process
      * @return {Promise}
      */
     refresh (refreshToken) {
