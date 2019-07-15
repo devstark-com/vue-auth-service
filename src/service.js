@@ -1,11 +1,11 @@
 import { isTokenValid } from './utils/jwt'
 
-const AuthService = (Vue, {
+function AuthService (Vue, {
   api,
   client,
   localStorage = window.localStorage,
   options = {}
-}) => {
+}) {
   let accessToken = null
 
   let refreshToken = null
@@ -14,7 +14,7 @@ const AuthService = (Vue, {
    * Reactive state for the service
    * @type {Vue}
    */
-  this.state = new Vue({
+  let state = new Vue({
     data () {
       return {
         loaded: false,
@@ -63,14 +63,14 @@ const AuthService = (Vue, {
 
     localStorage,
 
-    state: this.state,
+    state: state,
 
     /**
      * Reactive state
      * Is plugin loaded and a user fetched (or has tried to fetch a user)
      * @return {boolean}
      */
-    isLoaded () { return this.state.loaded },
+    isLoaded () { return state.loaded },
 
     /**
      * Async method for cases when we need to wait until auth plugin is loaded
@@ -79,8 +79,8 @@ const AuthService = (Vue, {
      */
     whenLoaded () {
       return new Promise(resolve => {
-        if (this.state.loaded) return resolve(true)
-        this.state.$on('loaded', resolve)
+        if (state.loaded) return resolve(true)
+        state.$on('loaded', resolve)
       })
     },
 
@@ -90,8 +90,8 @@ const AuthService = (Vue, {
      */
     whenUserDataLoaded () {
       return new Promise(resolve => {
-        if (this.state.userData) return resolve(this.state.userData)
-        this.state.$on('userDataLoaded', resolve)
+        if (state.userData) return resolve(state.userData)
+        state.$on('userDataLoaded', resolve)
       })
     },
 
@@ -101,8 +101,8 @@ const AuthService = (Vue, {
      */
     whenAuthenticated () {
       return new Promise(resolve => {
-        if (this.state.authenticated) return resolve(this.state.authenticated)
-        this.state.$on('authenticated', resolve)
+        if (state.authenticated) return resolve(state.authenticated)
+        state.$on('authenticated', resolve)
       })
     },
 
@@ -111,22 +111,22 @@ const AuthService = (Vue, {
      * Is user authenticated
      * @return {boolean}
      */
-    isAuthenticated () { return this.state.authenticated },
+    isAuthenticated () { return state.authenticated },
 
     /**
      * Reactive state
      * An object with user data retrived from API
      * @return {object}
      */
-    userData () { return this.state.userData },
+    userData () { return state.userData },
 
     /**
      * Update the reactive user data
      * @return {object}
      */
     updateUserData (data) {
-      this.state.userData = data
-      return this.state.userData
+      state.userData = data
+      return state.userData
     },
 
     /**
@@ -149,14 +149,14 @@ const AuthService = (Vue, {
     setLoaded () {
       // if beforeLoaded middleware is provided - wait for next() callback
       if (this.options.beforeLoaded) {
-        const next = () => { this.state.loaded = true }
+        const next = () => { state.loaded = true }
         return this.options.beforeLoaded(this, next)
       }
-      this.state.loaded = true
+      state.loaded = true
     },
 
     setAuthenticated (authenticated) {
-      this.state.authenticated = !!authenticated
+      state.authenticated = !!authenticated
     },
 
     /**
@@ -267,6 +267,7 @@ const AuthService = (Vue, {
      * @return {void}
      */
     setLocalAccessToken (token) {
+      accessToken = token
       return localStorage.setItem(this.options.accessTokenKey, token)
     },
 
@@ -283,6 +284,7 @@ const AuthService = (Vue, {
      * @return {void}
      */
     setLocalRefreshToken (token) {
+      refreshToken = token
       return localStorage.setItem(this.options.refreshTokenKey, token)
     },
 
@@ -303,7 +305,6 @@ const AuthService = (Vue, {
      * @param {Object.<string>} tokens An object with access and refresh tokens
      */
     updateLocalTokens (tokens) {
-      accessToken = tokens.accessToken
       this.setLocalAccessToken(tokens.accessToken)
       if (!this.options.refresh) return tokens
 

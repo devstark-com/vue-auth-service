@@ -10,7 +10,7 @@ export {
 // Plugin
 const plugin = {
   /* eslint-disable no-undef */
-  version: VERSION,
+  version: '0.7.0',
   install (Vue, options) {
     const serviceInstance = service(Vue, options)
     Vue.$auth = Vue.prototype.$auth = serviceInstance

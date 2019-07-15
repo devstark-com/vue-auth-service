@@ -1,7 +1,7 @@
 {
   "name": "vue-authenticate-service",
   "description": "Flexible Vue Auth Service & Plugin",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "author": {
     "name": "Refat",
     "email": "nobilix@gmail.com"
